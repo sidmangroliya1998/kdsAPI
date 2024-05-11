@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+ 
+ <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .text-24 {
+      font-size: 24px;
+    }
+
+    .text-8 {
+      font-size: 8px;
+    }
+
+    .fw-600 {
+      font-weight: 600;
+    }
+
+    .title {
+      font-family: 'Calibri', sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 40px;
+      line-height: 40px;
+      color: #0e110e;
+    }
+
+    #fee-text {
+      font-family: 'Calibri', sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+
+      color: #0e110e;
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      margin: 30px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .divider span {
+      padding: 0 10px;
+      background-color: #fff;
+    }
+
+    .container {
+      width: 550px;
+      margin: 0px auto;
+      padding: 0px 21px;
+      font-family: 'Cairo';
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .topContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .mainTable table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      border: 1px solid #00000033;
+      padding: 6px;
+      text-align: left;
+    }
+
+    body {
+      line-height: 35px;
+      font-family: 'Calibri', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="container">
+    <div>
+      <div style="text-align: center">
+        <div style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              padding-bottom: 20px;
+              padding-top: 20px;
+              text-align: center;
+              border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            ">
+          <div class="title">{{ order.restaurantId.name }}</div>
+          <div class="title">{{ order.restaurantId.nameAr }}</div>
+          <span class="text-24 fw-600">{{order.restaurantId.whatsappNumber}} Phone No.</span>
+          <span class="text-24 fw-600">{{ order.supplierId.vatNumber }} الرقم الضريبي</span>
+          <span>{{order.restaurantId.location.address}}
+            {{order.restaurantId.location.city}} {{order.restaurantId.location.state}}
+            {{order.restaurantId.location.zipCode}}
+          </span>
+          <div class="text-24 fw-600" style="margin-top: 10px">
+            <span style="direction: ltr;border:2px solid black; ">
+              {{order.orderNumber }}#
+              الطلب </span>
+          </div>
+          <div class="text-24 fw-600" style="margin-top: 10px">
+
+
+            <!-- {{#ifEquals isMassInvoice "FALSE"}} -->
+            <!-- <div style="
+                  text-align: center;
+                  display: flex;
+                  justify-content: center;
+                  font-size: 38px !important;                  
+                  font-weight:800;
+                  
+                ">
+                {{order.orderNumber }}
+             
+              <span
+                style="direction: ltr;border-top:2px solid black; 
+                border-bottom:2px solid black; border-left:2px solid black; padding: 10px; ">
+                Order: {{order.orderNumber }}</span>
+              <span style="direction: rtl;border-top:2px solid black; 
+              border-bottom:2px solid black;border-right:2px solid black; padding: 10px;">
+                الطلب #</span>
+
+            </div> -->
+            <!-- {{/ifEquals}} -->
+            {{#ifExists customerName}}
+            <span>Customer (العميل): {{customerName}} | ({{customerPhone}})</span> <br />
+            {{/ifExists}}
+
+            <span>{{moment order.createdAt format="D/M/YYYY [|] h:mm A"}}</span>
+            <div style="
+            text-align: center;
+            display: flex;
+            justify-content: center;
+          ">
+              <span style="direction: ltr">Invoice |&nbsp;</span>
+              <span style="direction: rtl"> فاتورة ضريبية</span>
+              <span style="direction: ltr">&nbsp;#{{ invoiceNumber }}</span>
+            </div>
+            {{#ifExists order.tableId.nameAr}}
+
+
+            <div style="
+                  text-align: center;
+                  display: flex;
+                  justify-content: center;
+                ">
+              <span style="direction: ltr">Table |&nbsp;</span>
+              <span style="direction: rtl">رقم الطاولة</span>
+              <span style="direction: ltr">&nbsp;#{{ order.tableId.nameAr }}</span>
+            </div>
+            {{/ifExists}}
+
+            {{#ifExists order.pager}}
+            <div style="
+                  text-align: center;
+                  display: flex;
+                  justify-content: center;
+                ">
+              <span style="direction: ltr">Pager |&nbsp;</span>
+              <span style="direction: rtl"> رقم البيجر</span>
+              <span style="direction: ltr">&nbsp;#{{ order.pager }}</span>
+            </div>
+            {{/ifExists}}
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="
+          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+          padding-bottom: 40px;
+        " class="tableData">
+      <div class="text-24" style="margin: 15px 0px; text-align: center; line-height: 30px">
+        {{#each items}}
+        <div style="display: flex; justify-content: space-between; gap: 10px">
+          <div style="flex: 1">Item{{math @index "+" 1}}</div>
+          <div style="flex: 3">
+            <div style="display: flex; flex-direction: column">
+              <div style="direction: ltr">{{this.name}}</div>
+              <div style="direction: rtl">{{this.nameAr}}</div>
+              <div>{{ this.additionTextAr }}</div>
+            </div>
+          </div>
+          <div style="flex: 1">X{{this.quantity}}</div>
+          <div style="flex: 1">
+            {{ math ../multiplier "*" this.totalWithTax}}
+          </div>
+        </div>
+        <br />
+        {{/each}}
+        <div></div>
+      </div>
+    </div>
+
+    <div class="text-24" style="position: relative; color: #0e110e">
+      {{#each discounts}}
+      <div style="
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0px;
+          ">
+        <div>Discount | التخفيض</div>
+        <div>{{ this.amount }}</div>
+      </div>
+      {{/each}}
+      <div style="
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0px;
+          ">
+        <div>Subtotal | قيمة المنتج</div>
+        <div>{{ math multiplier "*" orderData.totalTaxableAmount }}</div>
+      </div>
+
+      {{#ifEquals isFeeApplied "TRUE"}}
+      <div style="
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0px;
+          ">
+        <div>Tobacco Fees (100%) | %رسم منتج التبغ 100</div>
+        <div>{{ math multiplier "*" orderData.tobaccotaxableAmount }}</div>
+      </div>
+      {{/ifEquals}}
+      <div style="
+            display: flex;
+            justify-content: space-between;
+
+            margin: 15px 0px;
+          ">
+        <div>VAT 15% Tax | ضريبة</div>
+        <div>{{math multiplier "*" orderData.totalTax }}</div>
+      </div>
+      {{#ifEquals isTableFeeApplied "TRUE"}}
+      <div style="
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0px;
+          ">
+        <div>Table Fee | رسوم الجدول</div>
+        <div>{{ orderData.tableFees }}</div>
+      </div>
+      {{/ifEquals}}
+
+      <div style="
+            display: flex;
+            justify-content: space-between;
+
+            margin: 15px 0px;
+          ">
+        <div><b>Total</b></div>
+        <div><b>{{math multiplier "*" orderData.totalWithTax }}</b></div>
+      </div>
+      {{#ifEquals isFeeApplied "TRUE"}}
+      <div style="
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            margin-top: 10px;
+          ">
+        <div id="fee-text" style="direction: rtl">
+          الاسعار تشمل: رسوم الضريبة الانتقائية (رسوم التبغ 100%) والضريبة
+        </div>
+      </div>
+
+      {{/ifEquals}}
+
+      <div style="display: flex; justify-content: center; margin-bottom: 50px">
+        <img width="250px" src="{{ qrCode }}" alt="" />
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

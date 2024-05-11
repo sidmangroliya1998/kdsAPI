@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .text-24 {
+        font-size: 24px;
+      }
+      .text-8 {
+        font-size: 8px;
+      }
+      .fw-600 {
+        font-weight: 600;
+      }
+      .header-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        text-align: center;
+      }
+      .title {
+        font-family: 'Calibri';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 24px;
+        color: #0e110e;
+        margin: 12px 0;
+      }
+      .container {
+        width: 550px;
+        margin: 0px auto;
+        padding: 0px 21px;
+        font-family: 'Cairo';
+        border-radius: 4px;
+        background: #ffffff;
+      }
+      .topContainer {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        padding: 12px 0;
+      }
+      .detailsContainer {
+        display: grid;
+        margin-top: 10px;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 4px;
+        grid-column-gap: 12px;
+      }
+      .detailsItem {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      ​ .table {
+        border-collapse: collapse;
+      }
+      ​ .cell {
+        border: 2px solid #000000;
+        padding: 6px;
+        text-align: center;
+        border-style: dashed;
+        font-size: 20px;
+      }
+      .tableHeader {
+        background-color: rgba(200, 200, 200, 0.75);
+      }
+      body {
+        line-height: 35px;
+        font-family: 'Calibri', sans-serif;
+      }
+    </style>
+  </head>
+  ​
+  <body dir="rtl">
+    <div class="container" id="container">
+      <div style="margin: 15px 0px; text-align: center">
+        {{#ifEquals cashier.supplierId.cashierReceiptLanguage "Ar"}}
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <span>{{cashier.restaurantId.nameAr}}</span>
+        </div>
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <span>{{moment date format="YYYY-M-D"}}</span>
+        </div>
+
+        <div style="margin-top: 10px">
+          <div>ريال {{cashierData.openingBalance}} الرصيد الافتتاحي</div>
+          <div>ريال {{cashierData.salesPaidWithCash}} مبيعات الكاش</div>
+          <div>ريال {{cashierData.salesPaidWithCard}} مبيعات الشبكة</div>
+          <div>ريال {{cashierData.deferredAmount}} مبيعات الاجل</div>
+          <div>ريال {{cashierData.totalSales}} اجمالي المبيعات</div>
+
+          <div>
+            ريال {{cashierData.expenseAmount}} اجمالي المصاريف من الصندوق
+          </div>
+          <div>
+            ريال {{cashierData.totalRefunds}} اجمالي المبالغ المستردة للعميل
+          </div>
+          <div>
+            ريال {{cashierData.expectedCashAtClose}} اجمالي مبلغ الكاش المتوقع
+          </div>
+        </div>
+        <hr />
+        <br />
+        {{/ifEquals}} {{#ifEquals cashier.supplierId.cashierReceiptLanguage
+        "En"}}
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <span>{{cashier.restaurantId.name}}</span>
+        </div>
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          VAT Number {{cashier.supplierId.vatNumber}}
+        </div>
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <span
+            >{{moment cashierLog.closedAt format="D/M/YYYY [|] h:mm A"}}</span
+          >
+        </div>
+
+        <div style="margin-top: 10px">
+          <div class="text-24">Daily Sales Report</div>
+          <div>
+            First Order -
+            <span
+              >{{moment firstOrder.createdAt format="D/M/YYYY [|] h:mm
+              A"}}</span
+            >
+          </div>
+          <div>
+            Last Order -
+            <span
+              >{{moment lastOrder.createdAt format="D/M/YYYY [|] h:mm A"}}</span
+            >
+          </div>
+          <div>First Invoice - {{firstOrder.invoices?[0].invoiceNumber}}</div>
+          <div>Last Invoice - {{lastOrder.invoices?[0].invoiceNumber}}</div>
+          <div>Opening Balance {{cashierData.openingBalance}} SAR</div>
+          <div>Sales Paid Cash {{cashierData.salesPaidWithCash}} SAR</div>
+          <div>Sales Paid with Card {{cashierData.salesPaidWithCard}} SAR</div>
+          <div>Deferred Sales {{cashierData.deferredAmount}} SAR</div>
+          <div>Total Sales {{cashierData.totalSales}}SAR</div>
+
+          <div>Expense Amount {{cashierData.expenseAmount}} SAR</div>
+          <div>Total Refund {{cashierData.totalRefunds}} SAR</div>
+          <div>
+            Expected Cash on Hand {{cashierData.expectedCashAtClose}} SAR
+          </div>
+        </div>
+
+        <br />
+        {{/ifEquals}}
+      </div>
+    </div>
+  </body>
+</html>

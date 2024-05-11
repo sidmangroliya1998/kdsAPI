@@ -1,0 +1,24 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+import { AuthModule } from './auth/auth.module';
+
+describe('AppController', () => {
+  let appController: AppController;
+
+  beforeAll(async () => {
+    const app: TestingModule = await Test.createTestingModule({
+      imports: [AuthModule],
+      controllers: [AppController],
+      providers: [AppService],
+    }).compile();
+    appController = app.get<AppController>(AppController);
+  });
+
+  describe('root', () => {
+    it('should return "Hello World!"', () => {
+      expect(appController.getHello()).toBe('Hello World!');
+    });
+  });
+});

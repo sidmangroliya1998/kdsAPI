@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .text-24 {
+            font-size: 24px;
+        }
+
+        .text-8 {
+            font-size: 8px;
+        }
+
+        .fw-600 {
+            font-weight: 600;
+        }
+
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-bottom: 20px;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Calibri';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 24px;
+            color: #0e110e;
+            margin: 12px 0;
+        }
+
+        .container {
+            width: 550px;
+            margin: 0px auto;
+            padding: 0px 21px;
+            font-family: 'Cairo';
+            border-radius: 4px;
+            background: #ffffff;
+        }
+
+        .topContainer {
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            padding: 12px 0;
+        }
+
+        .detailsContainer {
+            display: grid;
+            margin-top: 10px;
+            grid-template-columns: 1fr 1fr;
+            grid-row-gap: 4px;
+            grid-column-gap: 12px;
+        }
+
+        .detailsItem {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        ​ .table {
+            table-layout: fixed !important;
+            width: 100% !important;
+        }
+
+
+        .table tr,
+        .table td,
+        .table th {
+            width: 350px !important;
+        }
+
+        ​ .cell {
+            border: 2px solid #000000;
+            padding: 6px;
+            text-align: center;
+            border-style: dashed;
+            font-size: 20px;
+        }
+
+        .tableHeader {
+            background-color: rgba(200, 200, 200, 0.75);
+        }
+
+        body {
+            line-height: 35px;
+            font-family: 'Calibri', sans-serif;
+        }
+    </style>
+</head>
+​
+
+<body dir="ltr">
+    <div class="container" id="container">
+
+        {{#ifEquals lang "en"}}
+        <div style="margin: 15px 0px; text-align: left">
+            <div class="text-24">
+                <sapn>{{cashier.restaurantId.name}}</sapn>
+            </div>
+            <div style="
+            grid-column: 3/1;
+            display: block;
+            grid-template-columns: 1fr 1fr 1fr;
+          " class="text-24">
+                <sapn>Business Date {{moment date format="YYYY-MM-DD"}}</sapn> <br />
+                <sapn>Opened at {{moment cashierData.firstOrder.createdAt format="YYYY-MM-DD HH:MM:SS"}}</sapn>
+            </div>
+
+            <div style="margin-top:10px">
+                <h3 style="text-align: center;">General</h3>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Gross Sales</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>Gross Sales without Tax</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.netSalesWithoutTax}}</td>
+                    </tr>
+                    <!-- <tr>
+            <td>Total Discount</td>
+            <td>{{cashierData.discountedSales.orderCount}}</td>
+            <td>SAR {{cashierData.discountedSales.total}}</td>
+          </tr> -->
+                    <tr>
+                        <td>Total Charges</td>
+                        <td>0</td>
+                        <td>SAR 0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Taxes</td>
+                        <td>0</td>
+                        <td>SAR {{cashierData.totalTax}}</td>
+                    </tr>
+                    <tr>
+                        <td>Net Sales</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>Guest Count</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>Average Per Order</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.averageCart}}</td>
+                    </tr>
+                    <tr>
+                        <td>Average Per Guest</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.averagePerPerson}}</td>
+                    </tr>
+                    <tr>
+                        <td>Entered Cash Amount</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.enteredCashAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Entered Card Amount</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.enteredCardAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Cash Difference</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.cashDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>Card Difference</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.cardDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Difference</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.totalDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>HungerStation Sales</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithHungerStation}}</td>
+                    </tr>
+                    <tr>
+                        <td>Zahez Sales</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithJahezSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>Toyo Sales</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithToyoSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>Other Sales</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithOtherSales}}</td>
+                    </tr>
+                    <!-- <tr>
+            <td>Total Void</td>
+            <td>0</td>
+            <td>SAR 0</td>
+          </tr>
+           <tr>
+            <td>Rounding</td>
+            <td>{{cashierData.allOrders.length}}</td>
+            <td>SAR {{cashierData.totalSales}}</td>
+          </tr> -->
+                </table>
+                <hr />
+                <h3 style="text-align: center;">Order Charges</h3>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Total Charges</td>
+                        <td>0</td>
+                        <td>SAR 0</td>
+                    </tr>
+                    <!-- <tr>
+            <td>Tobaaco Fees</td>
+            <td>0</td>
+            <td>SAR {{cashierData.totalFee}}</td>
+          </tr> -->
+                </table>
+                <hr />
+                <h3 style="text-align: center;">Order Types</h3>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                    </tr>
+                    {{#each cashierData.salesByType }}
+                    <tr>
+                        <td>{{ this._id }}</td>
+                        <td>{{ this.orderCount }}</td>
+                        <td>SAR {{ this.total }}</td>
+                    </tr>
+                    {{/each}}
+
+                </table>
+                <hr />
+                <!-- <h3 style="text-align: center;">Discount Summary</h3>
+        <table class="table">
+          <tr>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Amount</th>
+          </tr>
+          {{#each cashierData.discountedSales }}
+          <tr>
+            <td>{{ this._id }}</td>
+            <td>{{ this.orderCount }}</td>
+            <td>SAR {{ this.total }}</td>
+          </tr>
+          {{/each}}
+        </table> -->
+                <hr />
+                <h3 style="text-align: center;">Payments</h3>
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                    </tr>
+                    {{#each cashierData.payments }}
+                    <tr>
+                        <td>{{ this._id }}</td>
+                        <td>{{ this.orderCount }}</td>
+                        <td>SAR {{ this.total }}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+                <h3 style="text-align: center;">Sales By Item</h3>
+                {{#each cashierData.salesByItem }}
+                <h3 style="text-align: center;">{{ this._id.category }}</h3>
+                <table class="table" style="display: columns; width: 100%;">
+                    <tr>
+                        <th style="text-align: center;">Name</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: center;">Amount</th>
+                    </tr>
+                    {{#each this.items }}
+                    <tr>
+                        <td style="text-align: center;">{{ this.name }}</td>
+                        <td style="text-align: center;">{{ this.quantitiesSold }}</td>
+                        <td style="text-align: center;">{{ this.amountAfterDiscount }} SAR</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+                {{/each}}
+
+                <h3 style="text-align: center;">Sales By Category</h3>
+                <table class="table" style="display: columns; width: 100%;">
+                    <tr>
+                        <th style="text-align: center;">Name</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: center;">Amount</th>
+                    </tr>
+                    {{#each cashierData.salesByCategory }}
+                    <tr>
+                        <td style="text-align: center;">{{ this.category }}</td>
+                        <td style="text-align: center;">{{ this.quantitiesSold }}</td>
+                        <td style="text-align: center;">{{ this.amountAfterDiscount }} SAR</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+
+
+            </div>
+        </div>
+
+        {{else}}
+        <div style="margin: 15px 0px; text-align: left">
+            <div style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          " class="text-24">
+                <sapn>{{cashier.restaurantId.nameAr}}</sapn>
+            </div>
+            <div style="
+            grid-column: 3/1;
+            display: block;
+            grid-template-columns: 1fr 1fr 1fr;
+          " class="text-24">
+                <sapn>تاريخ العمل {{moment date format="YYYY-M-D"}}</sapn> <br />
+                <sapn>افتتح في {{moment cashierData.firstOrder.createdAt format="YYYY-M-D HH:MM:SS"}}</sapn>
+                <br />
+                <sapn>تمت الطباعة في {{moment date format="YYYY-M-D HH:MM:SS"}}</sapn>
+            </div>
+
+            <div style="margin-top:10px">
+                <h3 style="text-align: center;">عام</h3>
+                <table class="table">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الكمية</th>
+                        <th>المبلغ</th>
+                    </tr>
+                    <tr>
+                        <td>إجمالي المبيعات</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>إجمالي المبيعات بدون ضريبة</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.netSalesWithoutTax}}</td>
+                    </tr>
+                    <tr>
+                        <td>إجمالي الخصم</td>
+                        <td>{{cashierData.discountedSales.orderCount}}</td>
+                        <td>SAR {{cashierData.discountedSales.total}}</td>
+                    </tr>
+                    <tr>
+                        <td>إجمالي الرسوم</td>
+                        <td>0</td>
+                        <td>SAR 0</td>
+                    </tr>
+                    <tr>
+                        <td>إجمالي الضرائب</td>
+                        <td>0</td>
+                        <td>SAR {{cashierData.totalTax}}</td>
+                    </tr>
+                    <tr>
+                        <td>صافي المبيعات</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>عدد الضيوف</td>
+                        <td>{{cashierData.allOrders.length}}</td>
+                        <td>SAR {{cashierData.totalSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>المتوسط لكل طلب</td>
+                        <td></td>
+                        <td>SAR {{cashierData.averageCart}}</td>
+                    </tr>
+                    <tr>
+                        <td>المتوسط لكل ضيف</td>
+                        <td></td>
+                        <td>SAR {{cashierData.averagePerPerson}}</td>
+                    </tr>
+                    <tr>
+                        <td>المبلغ النقدي المدخل</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.enteredCashAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td>المبلغ المدخل عبر البطاقة</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.enteredCardAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td>الفارق النقدي</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.cashDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>الفارق البطاقي</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.cardDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>الفارق الإجمالي</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.totalDifference}}</td>
+                    </tr>
+                    <tr>
+                        <td>مبيعات هنقرستيشن</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithHungerStation}}</td>
+                    </tr>
+                    <tr>
+                        <td>مبيعات زاهز</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithJahezSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>مبيعات تويو</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithToyoSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>مبيعات أخرى</td>
+                        <td>-</td>
+                        <td>SAR {{cashierData.salesPaidWithOtherSales}}</td>
+                    </tr>
+                    <tr>
+                        <td>إجمالي الإلغاء</td>
+                        <td>0</td>
+                        <td>SAR 0</td>
+                    </tr>
+                    <!-- <tr>
+            <td>التقريب</td>
+            <td>{{cashierData.allOrders.length}}</td>
+            <td>SAR {{cashierData.totalSales}}</td>
+          </tr> -->
+                </table>
+                <hr />
+                <h3 style="text-align: center;">رسوم الطلب</h3>
+                <table class="table">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الكمية</th>
+                        <th>المبلغ</th>
+                    </tr>
+                    <tr>
+                        <td>إجمالي الرسوم</td>
+                        <td>0</td>
+                        <td>SAR 0</td>
+                    </tr>
+                    <tr>
+                        <td>رسوم التبغ</td>
+                        <td>0</td>
+                        <td>SAR {{cashierData.totalFee}}</td>
+                    </tr>
+                </table>
+                <hr />
+                <h3 style="text-align: center;">أنواع الطلبات</h3>
+                <table class="table">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الكمية</th>
+                        <th>المبلغ</th>
+                    </tr>
+                    {{#each cashierData.salesByType }}
+                    <tr>
+                        <td>{{ this._id }}</td>
+                        <td>{{ this.orderCount }}</td>
+                        <td>SAR {{ this.total }}</td>
+                    </tr>
+                    {{/each}}
+
+                </table>
+                <hr />
+                <h3 style="text-align: center;">ملخص الخصم</h3>
+                <table class="table">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الكمية</th>
+                        <th>المبلغ</th>
+                    </tr>
+                    {{#each cashierData.discountedSales }}
+                    <tr>
+                        <td>{{ this._id }}</td>
+                        <td>{{ this.orderCount }}</td>
+                        <td>SAR {{ this.total }}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+                <h3 style="text-align: center;">المدفوعات</h3>
+                <table class="table">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الكمية</th>
+                        <th>المبلغ</th>
+                    </tr>
+                    {{#each cashierData.payments }}
+                    <tr>
+                        <td>{{ this._id }}</td>
+                        <td>{{ this.orderCount }}</td>
+                        <td>SAR {{ this.total }}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+
+                <h3 style="text-align: center;"> المبيعات حسب العناصر</h3>
+                {{#each cashierData.salesByItem }}
+                <h3 style="text-align: center;">{{ this._id.categoryAr }}</h3>
+                <table class="table" style="display: columns; width: 100%;">
+                    <tr>
+                        <th style="text-align: center;">Name</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: center;">Amount</th>
+                    </tr>
+                    {{#each this.items }}
+                    <tr>
+                        <td style="text-align: center;">{{ this.name }}</td>
+                        <td style="text-align: center;">{{ this.quantitiesSold }}</td>
+                        <td style="text-align: center;">{{ this.amountAfterDiscount }} SAR</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+                {{/each}}
+
+                <h3 style="text-align: center;">المبيعات حسب الفئات</h3>
+                <table class="table" style="display: columns; width: 100%;">
+                    <tr>
+                        <th style="text-align: center;">Name</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: center;">Amount</th>
+                    </tr>
+                    {{#each cashierData.salesByCategory }}
+                    <tr>
+                        <td style="text-align: center;">{{ this.categoryAr }}</td>
+                        <td style="text-align: center;">{{ this.quantitiesSold }}</td>
+                        <td style="text-align: center;">{{ this.amountAfterDiscount }} SAR</td>
+                    </tr>
+                    {{/each}}
+                </table>
+                <hr />
+            </div>
+        </div>
+        {{/ifEquals}}
+        <br />
+    </div>
+</body>
+
+</html>

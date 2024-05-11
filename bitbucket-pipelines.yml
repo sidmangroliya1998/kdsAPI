@@ -1,0 +1,132 @@
+image: node:14
+
+pipelines:
+  branches:
+    release/dev:
+      - step:
+          name: Prepare and Deploy to Elastic Beanstalk
+          script:
+            # Update and install necessary tools
+            - apt-get update && apt-get install -y zip unzip curl python3 python3-pip
+            - pip3 install boto3
+
+
+            # Install AWS CLI
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            - unzip awscliv2.zip
+            - ./aws/install
+
+            # Configure AWS CLI
+            - aws configure set default.region us-east-1
+            - aws configure set aws_access_key_id $AWS_KEY
+            - aws configure set aws_secret_access_key $AWS_SECRET
+
+            # Prepare the zip file for deployment
+            - export ZIP_NAME="Gtimenu-stage-env-$BITBUCKET_BUILD_NUMBER.zip"
+            - git archive -v -o $ZIP_NAME --format=zip HEAD
+            
+            # Upload the zip file to S3
+            - aws s3 cp $ZIP_NAME s3://gtimenu-eb-deployment/
+            - aws s3 ls s3://gtimenu-eb-deployment/ # Check if the file is uploaded
+
+            # Deploy to Elastic Beanstalk
+            - pipe: atlassian/aws-elasticbeanstalk-deploy:0.4.1
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_KEY
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET
+                AWS_DEFAULT_REGION: 'us-east-1'
+                APPLICATION_NAME: 'GTI Menu'
+                ENVIRONMENT_NAME: 'Gtimenu-stage'
+                ZIP_FILE: 's3://gtimenu-eb-deployment/$ZIP_NAME'
+                S3_BUCKET: 'gtimenu-eb-deployment'
+                VERSION_LABEL: $ZIP_NAME
+                WAIT: 'true'
+
+          artifacts:
+            - $ZIP_NAME
+
+          after-script:
+            - >
+                # Install Python3, pip3, and Boto3
+                apt-get update && apt-get install -y python3 python3-pip
+                pip3 install boto3
+                echo "About to run fetch_logs.py"
+
+                LOGS=$(python3 fetch_logs.py) || echo "Error executing fetch_logs.py"
+                echo "fetch_logs.py executed"
+
+
+                # Check the exit code of the previous command
+                if [ "$BITBUCKET_EXIT_CODE" -eq 0 ]; then
+                    # Success notification to AWS SNS and Slack
+                    aws sns publish --topic-arn "arn:aws:sns:us-east-1:323230034331:codestar-notifications-$APP_ENV-backend" --message "Pipeline succeeded: Deployed $ZIP_NAME to Elastic Beanstalk environment Gtimenu-stage. Logs: $LOGS"
+                    curl -X POST https://hooks.slack.com/services/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 -H 'Content-type: application/json' --data '{"text": "Pipeline succeeded: Deployed '"$ZIP_NAME"' to Elastic Beanstalk environment Gtimenu-stage Logs:\n'"$LOGS"'"}'
+                else
+                    # Send failure notification with logs to AWS SNS and Slack
+                    aws sns publish --topic-arn "arn:aws:sns:us-east-1:323230034331:codestar-notifications-$APP_ENV-backend" --message "Pipeline failed: Error deploying $ZIP_NAME to Elastic Beanstalk environment Gtimenu-stage. Logs: $LOGS"
+                    curl -X POST https://hooks.slack.com/services/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 -H 'Content-type: application/json' --data '{"text": "Pipeline failed: Error deploying '"$ZIP_NAME"' to Elastic Beanstalk environment Gtimenu-stage. Logs:\n'"$LOGS"'"}'
+                fi
+    release/master:
+      - step:
+          name: Prepare and Deploy to Elastic Beanstalk
+          script:
+            # Update and install necessary tools
+            - apt-get update && apt-get install -y zip unzip curl python3 python3-pip
+            - pip3 install boto3
+
+
+            # Install AWS CLI
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            - unzip awscliv2.zip
+            - ./aws/install
+
+            # Configure AWS CLI
+            - aws configure set default.region us-east-1
+            - aws configure set aws_access_key_id $AWS_KEY
+            - aws configure set aws_secret_access_key $AWS_SECRET
+
+            # Prepare the zip file for deployment
+            - export ZIP_NAME="Gtimenu-prod-env-$BITBUCKET_BUILD_NUMBER.zip"
+            - git archive -v -o $ZIP_NAME --format=zip HEAD
+            
+            # Upload the zip file to S3
+            - aws s3 cp $ZIP_NAME s3://gtimenu-eb-deployment/
+            - aws s3 ls s3://gtimenu-eb-deployment/ # Check if the file is uploaded
+
+            # Deploy to Elastic Beanstalk
+            - pipe: atlassian/aws-elasticbeanstalk-deploy:0.4.1
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_KEY
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET
+                AWS_DEFAULT_REGION: 'us-east-1'
+                APPLICATION_NAME: 'GTI Menu'
+                ENVIRONMENT_NAME: 'Gtimenu-Prod'
+                ZIP_FILE: 's3://gtimenu-eb-deployment/$ZIP_NAME'
+                S3_BUCKET: 'gtimenu-eb-deployment'
+                VERSION_LABEL: $ZIP_NAME
+                WAIT: 'true'
+
+          artifacts:
+            - $ZIP_NAME
+
+          after-script:
+            - >
+                # Install Python3, pip3, and Boto3
+                apt-get update && apt-get install -y python3 python3-pip
+                pip3 install boto3
+                echo "About to run fetch_logs.py"
+
+                LOGS=$(python3 fetch_logs.py) || echo "Error executing fetch_logs.py"
+                echo "fetch_logs.py executed"
+
+
+                # Check the exit code of the previous command
+                if [ "$BITBUCKET_EXIT_CODE" -eq 0 ]; then
+                    # Success notification to AWS SNS and Slack
+                    aws sns publish --topic-arn "arn:aws:sns:us-east-1:323230034331:production-deployment-update" --message "Pipeline succeeded: Deployed $ZIP_NAME to Elastic Beanstalk environment Gtimenu-prod. Logs: $LOGS"
+                    curl -X POST https://hooks.slack.com/services/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 -H 'Content-type: application/json' --data '{"text": "Pipeline succeeded: Deployed '"$ZIP_NAME"' to Elastic Beanstalk environment Gtimenu-prod Logs:\n'"$LOGS"'"}'
+                else
+                    # Send failure notification with logs to AWS SNS and Slack
+                    aws sns publish --topic-arn "arn:aws:sns:us-east-1:323230034331:production-deployment-update" --message "Pipeline failed: Error deploying $ZIP_NAME to Elastic Beanstalk environment Gtimenu-prod. Logs: $LOGS"
+                    curl -X POST https://hooks.slack.com/services/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 -H 'Content-type: application/json' --data '{"text": "Pipeline failed: Error deploying '"$ZIP_NAME"' to Elastic Beanstalk environment Gtimenu-prod. Logs:\n'"$LOGS"'"}'
+                fi

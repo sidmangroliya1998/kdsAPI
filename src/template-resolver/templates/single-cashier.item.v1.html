@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .text-24 {
+            font-size: 24px;
+        }
+
+        .text-8 {
+            font-size: 8px;
+        }
+
+        .fw-600 {
+            font-weight: 600;
+        }
+
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-bottom: 20px;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Calibri';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 24px;
+            color: #0e110e;
+            margin: 12px 0;
+        }
+
+        .container {
+            width: 550px;
+            margin: 0px auto;
+            padding: 0px 21px;
+            font-family: 'Cairo';
+            border-radius: 4px;
+            background: #ffffff;
+        }
+
+        .topContainer {
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            padding: 12px 0;
+        }
+
+        .detailsContainer {
+            display: grid;
+            margin-top: 10px;
+            grid-template-columns: 1fr 1fr;
+            grid-row-gap: 4px;
+            grid-column-gap: 12px;
+        }
+
+        .detailsItem {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        ​ .table {
+            border-collapse: collapse;
+        }
+
+        ​ .cell {
+            border: 2px solid #000000;
+            padding: 6px;
+            text-align: center;
+            border-style: dashed;
+            font-size: 20px;
+        }
+
+        .tableHeader {
+            background-color: rgba(200, 200, 200, 0.75);
+        }
+
+        body {
+            line-height: 35px;
+            font-family: 'Calibri', sans-serif;
+        }
+    </style>
+</head>
+​
+
+<body dir="ltr">
+    <div class="container" id="container">
+        <div style="margin-top:10px">
+            {{#each cashierData.salesByItem }}
+                <h3 style="text-align: center;">{{ this._id.category }}</h3>
+                <table class="table" style="display: columns; width: 100%;">
+                <tr>
+                    <th style="text-align: center;">Name</th>
+                    <th style="text-align: center;">Qty</th>
+                    <th style="text-align: center;">Amount</th>
+                </tr>
+                {{#each this.items }}
+                    <tr>
+                    <td style="text-align: center;">{{ this.name }}</td>
+                    <td style="text-align: center;">{{ this.quantitiesSold }}</td>
+                    <td style="text-align: center;">{{ this.amountAfterDiscount }} SAR</td>
+                    </tr>
+                {{/each}}
+                </table>
+                <hr/>
+            {{/each}}
+          </div>
+    </div>
+</body>
+
+</html>

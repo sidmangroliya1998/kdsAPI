@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .text-24 {
+        font-size: 24px;
+      }
+      .text-8 {
+        font-size: 8px;
+      }
+      .fw-600 {
+        font-weight: 600;
+      }
+      .header-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        text-align: center;
+      }
+      .title {
+        font-family: 'Calibri';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 24px;
+        color: #0e110e;
+        margin: 12px 0;
+      }
+      .container {
+        width: 550px;
+        margin: 0px auto;
+        padding: 0px 21px;
+        font-family: 'Cairo';
+        border-radius: 4px;
+        background: #ffffff;
+      }
+      .topContainer {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        padding: 12px 0;
+      }
+      .detailsContainer {
+        display: grid;
+        margin-top: 10px;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 4px;
+        grid-column-gap: 12px;
+      }
+      .detailsItem {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      ​ .table {
+        border-collapse: collapse;
+      }
+      ​ .cell {
+        border: 2px solid #000000;
+        padding: 6px;
+        text-align: center;
+        border-style: dashed;
+        font-size: 20px;
+      }
+      .tableHeader {
+        background-color: rgba(200, 200, 200, 0.75);
+      }
+      body {
+        line-height: 35px;
+        font-family: 'Calibri', sans-serif;
+      }
+    </style>
+  </head>
+  ​
+  <body dir="rtl">
+    <div class="container" id="container">
+      <div style="margin: 15px 0px; text-align: center">
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <sapn>{{moment date format="YYYY-M-D"}}</sapn>
+        </div>
+        {{#each cashiers}}
+        <div class="title">{{ this.nameAr }}</div>
+        <div style="margin-top: 10px">
+          <hr />
+          <div style="font-size: 20px">Paid Orders</div>
+          {{#each this.paidOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div style="font-size: 20px">Cancelled Orders</div>
+          {{#each this.cancelledOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div style="font-size: 20px">Unpaid Orders</div>
+          {{#each this.unPaidOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div style="font-size: 20px">Deferred Orders</div>
+          {{#each this.deferredOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div style="font-size: 20px">Refunded Orders</div>
+          {{#each this.refundedOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="">
+          <div style="font-size: 20px">Discounted Orders</div>
+          {{#each this.discountedOrders}}
+          <div>
+            Order #{{this.orderNumber}} - {{this.summary.totalWithTax}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div style="font-size: 20px">Expenses</div>
+          {{#each this.expenses}}
+          <div>
+            Expense #{{this.expenseNumber}} - {{this.description}}
+            {{this.expense}}SAR
+          </div>
+          {{/each}}
+          <hr />
+        </div>
+        <div style="margin-top: 10px">
+          <div>{{this.openingBalance}}SAR عهدة الصندوق</div>
+          <div>{{this.cashSale}}SAR مجموع مبيعات الكاش</div>
+          <div>{{this.cardSale}}SAR مجموع مبيعات الشبكة</div>
+          <div>{{this.totalSale}}SAR مجموع مبيعات الاجل</div>
+          <div>{{this.refund}}SAR المجموع الاجمالي للبيع</div>
+          <div>{{this.discount}}SAR مجموع المبالغ المستردة</div>
+          <div>{{this.expense}}SAR المبلغ المفترض للكاش</div>
+          <div>{{this.expectedCash}}SAR المبلغ المفترض للكاش</div>
+        </div>
+        <hr />
+        <br />
+        {{/each}}
+      </div>
+    </div>
+  </body>
+</html>

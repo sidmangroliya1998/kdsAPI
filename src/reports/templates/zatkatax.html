@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+	<style>
+	body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+  }
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.restaurant-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.date-range {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin: 10px 0;
+}
+
+.start-date, .end-date {
+    font-size: 18px;
+}
+
+.totals {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin: 10px;
+    border: 1px solid black;
+    width: 350px;
+}
+
+.total {
+    text-align: left;
+    margin: 5px 15px;
+}
+
+h3 {
+    font-size: 16px;
+}
+h2 {
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+}
+
+p {
+    font-size: 16px;
+}
+
+.total-sales {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.total-sales {
+    font-size: 18px;
+}
+.total-container{
+    display: flex;
+}
+	</style>
+</head>
+<body>
+    <div class="container">
+       
+        <div class="date-range">
+            <div class="start-date">StartDt: {{startDt}} &nbsp; تاريخ البدء</div>
+            <div class="end-date">EndDt: {{endDt}} &nbsp; تاريخ الانتهاء</div>
+        </div>
+        <h2 class="restaurant-name">{{restaurantname}}  <br/>
+            {{vatno}}</h2>
+        
+    <div class="total-container">
+        <div class="totals">           
+            <h2>Expense | المصروفات</h2>
+           
+            <div class="total">
+                <h3>Total: {{expense.subTotal}} SAR &nbsp; | الإجمالي</h3>                
+            </div>
+            <div class="total">
+                <h3>Total Vat {{expense.vat}} SAR &nbsp; | إجمالي الضريبة المضافة </h3>               
+            </div>
+            <div class="total">
+                <h3>Total With Tax: {{expense.totalWithTax}} SAR &nbsp; | إجمالي مع الضريبة </h3>                
+            </div>
+           
+        </div>
+        <div class="totals">
+            <h2>Purchase | المشتريات            </h2>
+            <div class="total">
+                <h3>Total: {{purchase.subTotal}} SAR &nbsp; | الإجمالي</h3>                
+            </div>
+            <div class="total">
+                <h3>Total Vat {{purchase.vat}} SAR &nbsp; | إجمالي الضريبة المضافة </h3>               
+            </div>
+            <div class="total">
+                <h3>Total With Tax: {{purchase.totalWithTax}} SAR &nbsp; | إجمالي مع الضريبة </h3>                
+            </div>
+        </div>
+    </div>
+    <div class="total-container">
+        <div class="totals">
+            <h2>Refund | المرتجعات</h2>
+            <div class="total">
+                <h3>Total: {{refund.subTotal}} SAR &nbsp; | الإجمالي</h3>                
+            </div>
+            <div class="total">
+                <h3>Total Vat {{refund.vat}} SAR &nbsp; | إجمالي الضريبة المضافة </h3>               
+            </div>
+            <div class="total">
+                <h3>Total With Tax: {{refund.totalWithTax}} SAR &nbsp; | إجمالي مع الضريبة</h3>                
+            </div>
+        </div>
+         <div class="totals">
+            <h2>Sales | المبيعات            </h2>
+            <div class="total">
+                <h3>Total: {{sales.subTotal}} SAR &nbsp; | الإجمالي</h3>                
+            </div>
+            <div class="total">
+                <h3>Total Vat {{sales.vat}} SAR &nbsp; | إجمالي الضريبة المضافة </h3>               
+            </div>
+            <div class="total">
+                <h3>Total With Tax: {{sales.totalWithTax}} SAR &nbsp; | إجمالي مع الضريبة</h3>                
+            </div>
+        </div>
+    </div>
+        
+        <div class="total-sales">
+            <h2>Total Tax 100% Payable:  {{finalAmount}} SAR &nbsp; | إجمالي الضريبة %100 قابل للدفع</h2>
+        </div>
+    </div>
+</body>
+</html>

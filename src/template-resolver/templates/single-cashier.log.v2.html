@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .text-24 {
+        font-size: 24px;
+      }
+      .text-8 {
+        font-size: 8px;
+      }
+      .fw-600 {
+        font-weight: 600;
+      }
+      .header-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        text-align: center;
+      }
+      .title {
+        font-family: 'Calibri';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 24px;
+        color: #0e110e;
+        margin: 12px 0;
+      }
+      .container {
+        width: 550px;
+        margin: 0px auto;
+        padding: 0px 21px;
+        font-family: 'Cairo';
+        border-radius: 4px;
+        background: #ffffff;
+      }
+      .topContainer {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        padding: 12px 0;
+      }
+      .detailsContainer {
+        display: grid;
+        margin-top: 10px;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 4px;
+        grid-column-gap: 12px;
+      }
+      .detailsItem {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      ​ .table {
+        border-collapse: collapse;
+      }
+      ​ .cell {
+        border: 2px solid #000000;
+        padding: 6px;
+        text-align: center;
+        border-style: dashed;
+        font-size: 20px;
+      }
+      .tableHeader {
+        background-color: rgba(200, 200, 200, 0.75);
+      }
+      body {
+        line-height: 35px;
+        font-family: 'Calibri', sans-serif;
+      }
+    </style>
+  </head>
+  ​
+  <body dir="ltr">
+    <div class="container" id="container">
+      <div style="margin: 15px 0px; text-align: center">
+        {{#ifEquals cashier.supplierId.cashierReceiptLanguage "Ar"}}
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <sapn>{{cashier.restaurantId.nameAr}}</sapn>
+        </div>
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <sapn>{{moment date format="YYYY-M-D"}}</sapn>
+        </div>
+
+        <div style="margin-top: 10px">
+          <div>اسم المطعم : {{cashier.restaurantId.nameAr}}</div>
+          <div>رقم ضريبة القيمة المضافة : {{cashier.supplierId.vatNumber}}</div>    
+          <div>التاريخ و الوقت : {{moment date format="YYYY-M-D HH:MM:SS"}}</div>    
+          <div>الترتيب الأول (التاريخ والوقت): {{moment cashierData.firstOrder.createdAt format="YYYY-M-D HH:MM:SS"}}</div>
+          <div>آخر طلب (التاريخ والوقت): {{moment cashierData.lastOrder.createdAt format="YYYY-M-D HH:MM:SS"}}</div>
+          <div>رقم الفاتورة الأولى : {{cashierData.firstInvoiceNumber}}</div>
+          <div>رقم الفاتورة الأخيرة : {{cashierData.lastInvoiceNumber}}</div>
+          <div>عدد الزبائن : {{cashierData.totalCustomers}}</div>
+          <div>عدد الطلبيات : {{cashierData.allOrders.length}}</div>
+          <div>إجمالي المبيعات : {{cashierData.totalSales}}</div>
+          <div>إجمالي المبيعات النقدية : {{cashierData.salesPaidWithCash}}</div>
+          <div>إجمالي مبيعات البطاقة : {{cashierData.salesPaidWithCard}}</div>
+          <div>رسوم النرجيلة 100% : {{cashierData.totalFee}}</div>
+          <div>الضريبة 15% : {{cashierData.totalTax}}</div>
+          <div>الخصم (إجمالي الخصم)</div>
+          <div>المبيعات المؤجلة {{cashierData.deferredAmount}} SAR</div>
+          <div>Tإجمالي المبلغ المسترد {{cashierData.totalRefunds}} SAR</div>
+          <div>مبلغ النفقات {{cashierData.expenseAmount}} SAR</div>
+          <div>نقدا بعد خصم المصاريف واسترداد الأموال : {{cashierData.expectedCashAtClose}}</div>
+          <div>رصيد بداية أمين الصندوق : {{cashierData.openingBalance}}</div>
+          <div>متوسط قيمة العميل : {{cashierData.averagePerPerson}}</div>
+          <div>متوسط قيمة سلة التسوق/الفاتورة : {{cashierData.averageCart}}</div>
+          <div>صافي المبيعات بدون ضريبة : {{cashierData.netSalesWithoutTax}}</div>
+          <div>إجمالي المبيعات المدفوعة: {{ cashierData.totalSales }}</div>
+          <h3>المبيعات حسب الفئة</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">اسم الفئة</th>
+                <th class="tableHeader">كمية</th>
+                {{#each cashierData.salesByCategory }}
+                  <tr>
+                    <td>{{ this.categoryAr }}</td>
+                    <td>{{ this.amountAfterDiscount }}</td>
+                  </tr>
+                {{/each}}
+            </table><br>
+            <h3>المبيعات حسب العناصر</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">اسم العنصر</th>
+                <th class="tableHeader">كمية</th>
+                {{#each cashierData.salesByItem }}
+                  <tr>
+                    <td>{{ this.nameAr }}</td>
+                    <td>{{ this.amountAfterDiscount }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          </div>
+          <h3> ملخص الإلغاء </h3>
+          <table class="table" style="display: inline-flex;">
+                  <th class="tableHeader">رقم الأمر</th>
+                <th class="tableHeader">كمية</th>
+                  {{#each cashierData.cancelledSummary }}
+                    <tr>
+                      <td>{{ this.orderNumber }}</td>
+                      <td>{{ this.summary.totalWithTax }}</td>
+                    </tr>
+                  {{/each}}
+              </table>
+          <h3>الطلبات غير المدفوعة</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">رقم الأمر</th>
+                <th class="tableHeader">كمية</th>
+                {{#each cashierData.unpaidOrders }}
+                  <tr>
+                    <td>{{ this.orderNumber }}</td>
+                    <td>{{ this.summary.totalWithTax }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          <h3>جميع الطلبات</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">رقم الأمر</th>
+                <th class="tableHeader">رقم الطاولة</th>
+                <th class="tableHeader">كمية</th>
+                {{#each cashierData.allOrders }}
+                  <tr>
+                    <td>{{ this.orderNumber }}</td>
+                    <td>{{ this.tableId.nameAr }}</td>
+                    <td>{{ this.summary.totalWithTax }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          <div>عدد الفواتير : {{cashierData.invoiceCount}}</div>
+          <div>مبلغ النصائح : {{cashierData.tip}}</div>
+          <div>المبلغ النقدي : {{cashierData.expectedCashAtClose}} </div>
+          <div>مبلغ مدى : {{cashierData.salesPaidWithCard}} </div>
+        </div>
+        <hr />
+        <br />
+        {{/ifEquals}} {{#ifEquals cashier.supplierId.cashierReceiptLanguage
+        "En"}}
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <sapn>{{cashier.restaurantId.name}}</sapn>
+        </div>
+        <div
+          style="
+            grid-column: 3/1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+          "
+          class="text-24"
+        >
+          <sapn>{{moment date format="YYYY-M-D"}}</sapn>
+        </div>
+
+        <div style="margin-top: 10px">
+          <div>Restaurant Name : {{cashier.restaurantId.name}}</div>
+          <div>VAT Number : {{cashier.supplierId.vatNumber}}</div>    
+          <div>Date and Time : {{moment date format="YYYY-M-D HH:MM:SS"}}</div>    
+          <div>First Order (Date and time): {{moment cashierData.firstOrder.createdAt format="YYYY-M-D HH:MM:SS"}}</div>
+          <div>Last Order (Date and Time): {{moment cashierData.lastOrder.createdAt format="YYYY-M-D HH:MM:SS"}}</div>
+          <div>First Invoice Number : {{cashierData.firstInvoiceNumber}}</div>
+          <div>Last Invoice Number : {{cashierData.lastInvoiceNumber}}</div>
+          <div>Number of customers : {{cashierData.totalCustomers}}</div>
+          <div>Number of Orders : {{cashierData.allOrders.length}}</div>
+          <div>Total Sales : {{cashierData.totalSales}}</div>
+          <div>Total Cash Sales : {{cashierData.salesPaidWithCash}}</div>
+          <div>Total Card Sales : {{cashierData.salesPaidWithCard}}</div>
+          <div>Hooka Fee 100% : {{cashierData.totalFee}}</div>
+          <div>Tax 15% : {{cashierData.totalTax}}</div>
+          <div>Discount (Total Discount)</div>
+          <div>Deferred Sales {{cashierData.deferredAmount}} SAR</div>
+          <div>Total Refund {{cashierData.totalRefunds}} SAR</div>
+          <div>Expense Amount {{cashierData.expenseAmount}} SAR</div>
+          <div>Cash after deducting Expenses and Refund : {{cashierData.expectedCashAtClose}}</div>
+          <div>Cashier Beginning Balance : {{cashierData.openingBalance}}</div>
+          <div>Average Customer Value : {{cashierData.averagePerPerson}}</div>
+          <div>Average Cart/invoice value : {{cashierData.averageCart}}</div>
+          <div>Net Sales Without Tax : {{cashierData.netSalesWithoutTax}}</div>
+          <div>total Paid sales: {{ cashierData.totalSales }}</div>
+          <h3>Sales by Category</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">Category Name</th>
+                <th class="tableHeader">Amount</th>
+                {{#each cashierData.salesByCategory }}
+                  <tr>
+                    <td>{{ this.category }}</td>
+                    <td>{{ this.amountAfterDiscount }}</td>
+                  </tr>
+                {{/each}}
+            </table><br>
+            <h3>Sales by Items</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">Item Name</th>
+                <th class="tableHeader">Amount</th>
+                {{#each cashierData.salesByItem }}
+                  <tr>
+                    <td>{{ this.name }}</td>
+                    <td>{{ this.amountAfterDiscount }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          </div>
+          <h3> Cancellation Summary </h3>
+              <table class="table" style="display: inline-flex;">
+                  <th class="tableHeader">Order number</th>
+                  <th class="tableHeader">Amount</th>
+                  {{#each cashierData.cancelledSummary }}
+                    <tr>
+                      <td>{{ this.orderNumber }}</td>
+                      <td>{{ this.summary.totalWithTax }}</td>
+                    </tr>
+                  {{/each}}
+              </table>
+          
+          <h3>Unpaid Orders</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">Order number</th>
+                <th class="tableHeader">Amount</th>
+                {{#each cashierData.unpaidOrders }}
+                  <tr>
+                    <td>{{ this.orderNumber }}</td>
+                    <td>{{ this.summary.totalWithTax }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          <h3>All Orders</h3>
+            <table class="table" style="display: inline-flex;">
+                <th class="tableHeader">Order number</th>
+                <th class="tableHeader">Table Number</th>
+                <th class="tableHeader">Amount</th>
+                {{#each cashierData.allOrders }}
+                  <tr>
+                    <td>{{ this.orderNumber }}</td>
+                    <td>{{ this.tableId.name }}</td>
+                    <td>{{ this.summary.totalWithTax }}</td>
+                  </tr>
+                {{/each}}
+            </table>
+          <div>Invoice Count : {{cashierData.invoiceCount}}</div>
+          <div>Tips amount : {{cashierData.tip}}</div>
+          <div>Cash Amount : {{cashierData.expectedCashAtClose}} </div>
+          <div>Mada Amount : {{cashierData.salesPaidWithCard}} </div>
+        </div>
+
+        <br />
+        {{/ifEquals}}
+      </div>
+    </div>
+  </body>
+</html>
