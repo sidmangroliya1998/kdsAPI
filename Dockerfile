@@ -1,4 +1,4 @@
-FROM node:lts AS builder
+FROM node:20-slim AS builder
 
 # Install Redis and necessary build dependencies for node-canvas
 # Switch to root user temporarily to install system-level packages
@@ -12,6 +12,7 @@ RUN apt-get update && \
     libpango1.0-dev \
     libgif-dev \
     librsvg2-dev \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
