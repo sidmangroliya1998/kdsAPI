@@ -1,6 +1,6 @@
 // src/task-management/task.service.ts
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { LeanDocument, Model, PaginateModel, PaginateResult } from 'mongoose';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -139,6 +139,46 @@ export class TaskManagementService {
                 $lte: endDate,
             };
         }
+        if (req.query.postedStartDate && req.query.postedEndDate) {
+            let startDate = new Date(req.query.postedStartDate);
+            startDate.setUTCHours(0);
+            startDate.setUTCMinutes(0);
+
+            let endDate = new Date(req.query.postedEndDate);
+            endDate.setUTCHours(23);
+            endDate.setUTCMinutes(59);
+
+            query.docPostedDate = {
+                $gte: startDate,
+                $lte: endDate,
+            };
+        }
+
+        if (req.query.searchText && req.query.searchText != '') {
+
+            query.$or = [
+                {
+                    referenceDocNumber: { $regex: req.query.searchText, $options: 'i' }
+                },
+                {
+                    docNumber: { $regex: req.query.searchText, $options: 'i' }
+                },
+                {
+                    docReferenceNumber: { $regex: req.query.searchText, $options: 'i' }
+                }
+            ];
+        }
+        if (req.query.minAmount > 0 || req.query.maxAmount > 0) {
+            const amountRangeQuery: any = {};
+
+            if (req.query.minAmount > 0) {
+                amountRangeQuery.$gte = Number(req.query.minAmount);
+            }
+            if (req.query.maxAmount > 0) {
+                amountRangeQuery.$lte = Number(req.query.maxAmount);
+            }
+            query.totalAmount = amountRangeQuery;
+        }
 
         const taskMgmt = await this.taskModelPag.paginate(
             {
@@ -146,7 +186,13 @@ export class TaskManagementService {
                 ...query
             },
             {
-                sort: DefaultSort,
+                sort: paginateOptions.sortBy
+                    ? {
+                        [paginateOptions.sortBy]: paginateOptions.sortDirection
+                            ? paginateOptions.sortDirection
+                            : -1,
+                    }
+                    : DefaultSort,
                 lean: true,
                 ...paginateOptions,
                 ...pagination,
@@ -182,8 +228,65 @@ export class TaskManagementService {
         return this.taskModel.findById(id);
     }
 
-    async update(id: string, updateTaskDto: UpdateTaskDto): Promise<TaskManagementDocument> {
-        return this.taskModel.findByIdAndUpdate(id, updateTaskDto, { new: true });
+    async update(req: any, id: string, updateTaskDto: UpdateTaskDto): Promise<TaskManagementDocument> {
+
+        if (updateTaskDto.docObject && updateTaskDto.docObject?.referenceNumber != '') {
+
+            let checkExistsRef = null;
+            checkExistsRef = await this.taskModel.findOne({
+                supplierId: new mongoose.Types.ObjectId(req.user.supplierId),
+                taskType: updateTaskDto.taskType,
+                docReferenceNumber: updateTaskDto.docObject?.referenceNumber,
+                referenceDocId: { $ne: null },
+            });
+            console.log("checkExistsRef", checkExistsRef)
+
+            if (!checkExistsRef || checkExistsRef == null) {
+                if (updateTaskDto.taskType == BulkTaskType.PO) {
+                    checkExistsRef = await this.purchaseOrderModel.findOne({
+                        supplierId: new mongoose.Types.ObjectId(req.user.supplierId),
+                        referenceNumber: updateTaskDto.docObject?.referenceNumber
+                    });
+                    console.log("checkExistsRef2", checkExistsRef)
+                }
+                else if (updateTaskDto.taskType == BulkTaskType.Purchase) {
+                    checkExistsRef = await this.purchaseModel.findOne({
+                        supplierId: new mongoose.Types.ObjectId(req.user.supplierId),
+                        referenceNumber: updateTaskDto.docObject?.referenceNumber
+                    });
+                }
+                else if (updateTaskDto.taskType == BulkTaskType.Expense) {
+                    checkExistsRef = await this.expenseModel.findOne({
+                        supplierId: new mongoose.Types.ObjectId(req.user.supplierId),
+                        referenceNumber: updateTaskDto.docObject?.referenceNumber
+                    });
+                }
+            }
+
+
+
+            if (checkExistsRef && checkExistsRef != null) {
+                throw new BadRequestException('Reference number already exists');
+            }
+        }
+
+        if (updateTaskDto.docObject && updateTaskDto.docObject.date) {
+
+            console.log("updateTaskDto.docObject", updateTaskDto.docObject);
+            return this.taskModel.findByIdAndUpdate(id,
+                {
+                    ...updateTaskDto,
+                    docPostedDate: updateTaskDto.docObject.date,
+                    docReferenceNumber: updateTaskDto.docObject?.referenceNumber
+                }, { new: true });
+        }
+        else {
+            return this.taskModel.findByIdAndUpdate(id,
+                {
+                    ...updateTaskDto
+                }, { new: true });
+        }
+
     }
 
     async bulkApproval(req: any, dto: CreateBulkApprovalDto) {
@@ -205,38 +308,60 @@ export class TaskManagementService {
         const allTasks = await this.taskModel.find({
             _id: { $in: dto.taskIds.map(id => new mongoose.Types.ObjectId(id)) }
         });
+
         if (allTasks && allTasks?.length > 0) {
             for (let i = 0; i < allTasks.length; i++) {
+
                 const el = allTasks[i];
+                req = {
+                    user: {
+                        supplierId: el.supplierId
+                    }
+                }
                 if (el.taskType == BulkTaskType.PO && el.docObject) {
                     const poData = el.docObject;
                     poData.transType = TransStatus.Approved;
                     const po = await this.purchaseOrderService.create(req, poData, null);
-                    await this.taskModel.findByIdAndUpdate(el._id,
-                        {
-                            referenceDocId: po._id,
-                            referenceDocNumber: po.poNumber
-                        }, { new: true });
+                    if (po && po != null) {
+                        await this.taskModel.findByIdAndUpdate(el._id,
+                            {
+                                referenceDocId: po._id,
+                                referenceDocNumber: po.poNumber,
+                                docPostedDate: po.date,
+                                docReferenceNumber: po.referenceNumber
+                            }, { new: true });
+                    }
+
                 }
                 else if (el.taskType == BulkTaskType.Purchase && el.docObject) {
                     const pp = el.docObject;
                     pp.transType = TransStatus.Approved;
                     const purchase = await this.purchaseService.create(req, pp);
-                    await this.taskModel.findByIdAndUpdate(el._id,
-                        {
-                            referenceDocId: purchase._id,
-                            referenceDocNumber: purchase.voucherNumber
-                        }, { new: true })
+                    if (purchase) {
+                        await this.taskModel.findByIdAndUpdate(el._id,
+                            {
+                                referenceDocId: purchase._id,
+                                referenceDocNumber: purchase.voucherNumber,
+                                docPostedDate: purchase.date,
+                                docReferenceNumber: purchase.referenceNumber
+                            }, { new: true });
+                    }
+
                 }
                 else if (el.taskType == BulkTaskType.Expense && el.docObject) {
                     const exp = el.docObject;
                     exp.transType = TransStatus.Approved;
                     const expense = await this.expenseService.create(req, el.docObject);
-                    await this.taskModel.findByIdAndUpdate(el._id,
-                        {
-                            referenceDocId: expense._id,
-                            referenceDocNumber: expense.voucherNumber
-                        }, { new: true });
+                    if (expense) {
+                        await this.taskModel.findByIdAndUpdate(el._id,
+                            {
+                                referenceDocId: expense._id,
+                                referenceDocNumber: expense.voucherNumber,
+                                docPostedDate: expense.date,
+                                docReferenceNumber: expense.referenceNumber
+                            }, { new: true });
+                    }
+
                 }
             }
         }
@@ -245,5 +370,96 @@ export class TaskManagementService {
 
     async delete(id: string): Promise<TaskManagementDocument> {
         return this.taskModel.findByIdAndRemove(id);
+    }
+
+    async bulkProcess() {
+
+        // //update all date
+        // const allTasks = await this.taskModel.find({
+        //     referenceDocId: { $ne: null },
+        //     $or: [
+        //         { docPostedDate: { $exists: false } },
+        //         { docPostedDate: null }
+        //     ],
+        //     docObject: { $exists: true }
+        // });
+
+        // for (let i = 0; i < allTasks.length; i++) {
+        //     const el = allTasks[i];
+        //     await this.taskModel.findByIdAndUpdate(el._id, {
+        //         docPostedDate: el.docObject.date
+        //     }, { new: true });
+        // }
+
+        //update all referenceNumber & voucherNumber
+
+        // const allTaskData = await this.taskModel.find({
+        //     referenceDocId: { $ne: null },
+        // })
+        // for (let i = 0; i < allTaskData.length; i++) {
+        //     const el = allTaskData[i];
+        //     let refNumber = "", voucherNumber = "", postedDate = null;
+        //     if (el.taskType?.toString() == "PO" || el.taskType?.toString() == "Purchase Order") {
+        //         const poData = await this.purchaseOrderModel.findById(el.referenceDocId);
+        //         if (poData) {
+        //             refNumber = poData.referenceNumber?.toString();
+        //             voucherNumber = poData.poNumber?.toString();
+        //             postedDate = poData.date;
+        //         }
+        //     }
+        //     else if (el.taskType == BulkTaskType.Purchase) {
+        //         const purchaseData = await this.purchaseModel.findById(el.referenceDocId);
+        //         if (purchaseData) {
+        //             refNumber = purchaseData.referenceNumber?.toString();
+        //             voucherNumber = purchaseData.voucherNumber?.toString();
+        //             postedDate = purchaseData.date;
+        //         }
+        //     }
+        //     else if (el.taskType == BulkTaskType.Expense) {
+        //         const expenseData = await this.expenseModel.findById(el.referenceDocId);
+        //         if (expenseData) {
+        //             refNumber = expenseData.referenceNumber?.toString();
+        //             voucherNumber = expenseData.voucherNumber?.toString();
+        //             postedDate = expenseData.date;
+        //         }
+        //     }
+        //     if (refNumber != '' || postedDate != '' || voucherNumber != '') {
+        //         await this.taskModel.findByIdAndUpdate(el._id, {
+        //             docPostedDate: postedDate,
+        //             referenceDocNumber: voucherNumber,
+        //             docReferenceNumber: refNumber
+        //         }, { new: true });
+        //     }
+
+
+        // }
+
+        const taskAlreadyApproved = await this.taskModel.find({
+            $or: [
+                { referenceDocId: { $exists: false } },
+                { referenceDocId: null },
+                { referenceDocId: "" }
+            ],
+            taskStatus: TaskStatus.Approved
+        });
+
+        // for (let i = 0; i < taskAlreadyApproved.length; i++) {
+        //     const el = taskAlreadyApproved[i];
+        //     await this.taskModel.findByIdAndUpdate(el._id, {
+        //         docPostedDate: el.docObject?.date,
+        //         docReferenceNumber: el.docObject?.referenceNumber?.toString()
+        //     }, { new: true });
+        // }
+
+        const allTasksIds = taskAlreadyApproved.map((m: any) => m._id);
+        //console.log("taskAlreadyApproved", allTasksIds?.toString());
+
+        const ids: CreateBulkApprovalDto = {
+            taskIds: allTasksIds
+        }
+        await this.approvePOPurchaseExpense(null, ids);
+
+
+        return true;
     }
 }

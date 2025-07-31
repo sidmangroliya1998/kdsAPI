@@ -81,7 +81,7 @@ export class PublishService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
-  private readonly prodUrl = 'https://apimenu.talabatmenu.com';
+  private readonly prodUrl = 'http://localhost:3000/';
   private readonly superAdminAccessToken = this.configService.get(
     'app.superAdminToken',
   );
@@ -94,11 +94,11 @@ export class PublishService {
   public kitchenQueues = {};
   public errors = [];
   async publish(dto: PublishDto) {
-    console.log('----------------Creating Supplier----------------');
+    console.log(`----------------Creating Supplier ${dto.supplierId}----------------`);
     const supplier = await this.createSupplier(dto.supplierId);
     console.log('----------------Supplier Created----------------');
 
-    console.log('----------------Impersoinating Supplier----------------');
+    console.log(`----------------Impersoinating Supplier ${supplier?._id}----------------`);
     await this.impersonateSupplier(supplier);
     console.log('----------------Supplier Impersonated----------------');
 
@@ -157,32 +157,33 @@ export class PublishService {
     if (!supplier) {
       throw new NotFoundException();
     }
-    const supplierObj = supplier.toObject();
-    supplierObj.whatsapp = supplierObj.whatsapp ?? '';
-    const response = await lastValueFrom(
-      this.httpService
-        .post(
-          `${this.prodUrl}/supplier`,
-          {
-            ...supplierObj,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${this.superAdminAccessToken}`,
-            },
-          },
-        )
-        .pipe(map((resp) => resp.data))
-        .pipe(
-          catchError((e) => {
-            throw new BadRequestException(e);
-          }),
-        ),
-    );
-    console.log(response, response?.data);
-    if (response && response.data) return response.data;
-    console.log(response);
-    throw new BadRequestException(`Not able create supplier on prod`);
+    return supplier
+    // const supplierObj = supplier.toObject();
+    // supplierObj.whatsapp = supplierObj.whatsapp ?? '';
+    // const response = await lastValueFrom(
+    //   this.httpService
+    //     .post(
+    //       `${this.prodUrl}/supplier`,
+    //       {
+    //         ...supplierObj,
+    //       },
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${this.superAdminAccessToken}`,
+    //         },
+    //       },
+    //     )
+    //     .pipe(map((resp) => resp.data))
+    //     .pipe(
+    //       catchError((e) => {
+    //         throw new BadRequestException(e);
+    //       }),
+    //     ),
+    // );
+    // console.log(response, response?.data);
+    // if (response && response.data) return response.data;
+    // console.log(response);
+    // throw new BadRequestException(`Not able create supplier on prod`);
   }
   async impersonateSupplier(prodSupplier: SupplierDocument) {
     const response = await lastValueFrom(

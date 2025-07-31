@@ -274,8 +274,9 @@ export class InvoiceHelperService {
       order.supplierId._id + '/' + order.restaurantId._id + '/invoice/',
     );
 
+   
     if (document.s3Url && document.imageUrl) {
-      if (!order.supplierId.disableAutoCashierPrint) {
+      if (!order.supplierId.disableAutoCashierPrint || dto.isManual) {
         let queryToApply: any = {};
         if (order?.restaurantId._id && order?.restaurantId._id != '') {
           queryToApply =
@@ -296,6 +297,8 @@ export class InvoiceHelperService {
             supplierId: order.supplierId._id,
           });
         }
+
+        console.log("Printer data", printer);
 
         await this.socketGateway.emit(
           order.supplierId._id.toString(),
@@ -663,6 +666,7 @@ export class InvoiceHelperService {
   }
 
   async postInvoiceCreate(invoice: InvoiceDocument, order: OrderDocument) {
+    
     if (invoice.type == InvoiceType.Invoice) {
       if (
         order.supplierId.autoTransferSaleGl &&
@@ -689,6 +693,7 @@ export class InvoiceHelperService {
         },
       });
     }
+    
 
     if (invoice.type == InvoiceType.Invoice) {
       await this.socketGateway.emit(
@@ -696,7 +701,7 @@ export class InvoiceHelperService {
         SocketEvents.Invoice,
         invoice.toObject(),
       );
-    }
+   }
 
 
   }

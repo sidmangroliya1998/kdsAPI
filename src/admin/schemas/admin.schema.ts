@@ -15,7 +15,7 @@ export class Admin {
   @Prop({ unique: true, index: true, sparse: true })
   email: string;
 
-  @Prop()
+  @Prop({ default: null })
   password: string;
 
   @Prop({

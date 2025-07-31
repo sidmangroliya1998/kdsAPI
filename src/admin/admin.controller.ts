@@ -22,18 +22,18 @@ import { Admin, AdminDocument } from 'src/admin/schemas/admin.schema';
 
 @Controller('admin')
 @ApiTags('Admins')
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
-  @PermissionGuard(PermissionSubject.Admin, Permission.Common.CREATE)
+  // @PermissionGuard(PermissionSubject.Admin, Permission.Common.CREATE)
   async create(@Req() req, @Body() dto: CreateAdminDto) {
     return await this.adminService.create(req, dto);
   }
 
   @Get()
-  @PermissionGuard(PermissionSubject.Admin, Permission.Common.LIST)
+  // @PermissionGuard(PermissionSubject.Admin, Permission.Common.LIST)
   async findAll(
     @Req() req,
     @Query() paginateOptions: PaginationDto,
@@ -42,13 +42,13 @@ export class AdminController {
   }
 
   @Get(':adminId')
-  @PermissionGuard(PermissionSubject.Admin, Permission.Common.FETCH)
+  // @PermissionGuard(PermissionSubject.Admin, Permission.Common.FETCH)
   async findOne(@Param('adminId') adminId: string) {
     return await this.adminService.findOne(adminId);
   }
 
   @Patch(':adminId')
-  @PermissionGuard(PermissionSubject.Admin, Permission.Common.UPDATE)
+  // @PermissionGuard(PermissionSubject.Admin, Permission.Common.UPDATE)
   async update(
     @Req() req,
     @Param('adminId') adminId: string,
@@ -58,7 +58,7 @@ export class AdminController {
   }
 
   @Delete(':adminId')
-  @PermissionGuard(PermissionSubject.Admin, Permission.Common.DELETE)
+  // @PermissionGuard(PermissionSubject.Admin, Permission.Common.DELETE)
   async remove(@Param('adminId') adminId: string) {
     return await this.adminService.remove(adminId);
   }

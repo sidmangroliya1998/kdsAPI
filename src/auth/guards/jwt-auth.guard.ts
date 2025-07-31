@@ -32,10 +32,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info) {
-    if (err || !user) {
-      throw err || new UnauthorizedException();
-    }
-    appContext.request.user = user;
+    // if (err || !user) {
+    //   throw err || new UnauthorizedException();
+    // }
+    // appContext.request.user = user;
     // this.logPayloadService.create(appContext.request, {
     //   query: appContext.request.query,
     //   body: appContext.request.body,

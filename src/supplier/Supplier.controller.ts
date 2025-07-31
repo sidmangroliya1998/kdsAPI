@@ -32,13 +32,13 @@ import { SupplierAggregated } from './interfaces/suppliers.interface';
 
 @ApiTags('Suppliers')
 @Controller('supplier')
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 @ApiHeader({ name: 'lang' })
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   @Post()
-  @PermissionGuard(PermissionSubject.Supplier, Permission.Common.CREATE)
+  // @PermissionGuard(PermissionSubject.Supplier, Permission.Common.CREATE)
   addSupplier(
     @Req() req,
     @Body() supplierDetails: AddSupplierDto,

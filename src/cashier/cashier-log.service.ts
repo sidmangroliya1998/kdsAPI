@@ -519,7 +519,7 @@ export class CashierLogService {
       cashierLog,
       cashierLog.cashierId,
       dto.lang,
-      true,
+      dto.isFullPagePrint,
       true
     );
     if (dto.action == PrintAction.Email) {

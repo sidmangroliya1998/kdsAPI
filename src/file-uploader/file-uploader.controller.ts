@@ -33,7 +33,7 @@ import { SkipInterceptor } from 'src/core/decorators/skip-interceptor.decorator'
 @ApiBearerAuth('access-token')
 @ApiHeader({ name: 'lang' })
 export class FileUploaderController {
-  constructor(private readonly fileUploaderService: FileUploaderService) {}
+  constructor(private readonly fileUploaderService: FileUploaderService) { }
 
   @ApiConsumes('multipart/form-data')
   @Post('images')
@@ -164,7 +164,32 @@ export class FileUploaderController {
       fileRequest,
       files,
     );
-   
+
+    return fileUrlsPng;
+  }
+
+  @ApiConsumes('multipart/form-data')
+  @Post('all-files')
+  @UseInterceptors(
+    FilesFastifyInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: './upload/',
+        filename: editFileName,
+      }),
+    }),
+  )
+  async allTypeFiles(
+    @Req() req: any,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: MultipleFileDto,
+  ) {
+    const fileRequest = { ...body, type: 'files' };
+    const fileUrlsPng = await this.fileUploaderService.upload(
+      req,
+      fileRequest,
+      files,
+    );
+
     return fileUrlsPng;
   }
 }

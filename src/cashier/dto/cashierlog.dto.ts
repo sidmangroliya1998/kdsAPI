@@ -56,4 +56,9 @@ export class CashierLogPrintDto {
         message: i18nValidationMessage('validation.MUST_BE_MONGO_ID'),
     })
     cashierLogId: string;
+
+    @ApiProperty({ default: true })
+    @IsOptional()
+    @IsBoolean()
+    isFullPagePrint: boolean;
 }

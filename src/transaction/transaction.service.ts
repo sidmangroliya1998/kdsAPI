@@ -233,6 +233,7 @@ export class TransactionService {
                 type: order.supplierId.massInvoice
                   ? InvoiceType.Receipt
                   : InvoiceType.Invoice,
+                isManual: false
               });
             } catch (err) {
               console.log(err);

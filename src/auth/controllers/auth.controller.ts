@@ -28,7 +28,7 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { UserDocument } from 'src/users/schemas/users.schema';
 
 @Public()
-@ApiTags('Auth')
+// @ApiTags('Auth')
 @ApiHeader({ name: 'lang' })
 @Controller('auth')
 export class AuthController {
@@ -61,7 +61,6 @@ export class AuthController {
 
   @Post('admin-login')
   async adminLogin(@Req() req, @Body() dto: AdminLoginDto): Promise<any> {
-
     const response = await this.authService.adminLogin(dto);
     return response;
   }

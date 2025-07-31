@@ -25,7 +25,7 @@ export class TaskManagementController {
     async createBulk(@Req() req, @Body() dto: CreateBulkTaskDto): Promise<any> {
         return this.taskService.createBulk(req, dto);
     }
-    
+
     @Get()
     async findAll(@Req() req,
         @Query() paginateOptions: PaginationDto,
@@ -39,8 +39,8 @@ export class TaskManagementController {
     }
 
     @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto): Promise<TaskManagementDocument> {
-        return this.taskService.update(id, updateTaskDto);
+    async update(@Req() req, @Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto): Promise<TaskManagementDocument> {
+        return this.taskService.update(req, id, updateTaskDto);
     }
 
     @Post('bulk-approval')
@@ -51,5 +51,10 @@ export class TaskManagementController {
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<TaskManagementDocument> {
         return this.taskService.delete(id);
+    }
+
+    @Get('bulk-script')
+    async bulkScript() {
+        return this.taskService.bulkProcess();
     }
 }

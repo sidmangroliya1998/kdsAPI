@@ -15,7 +15,7 @@ export class FileUploaderService {
   constructor(
     private readonly s3Service: S3Service,
     private readonly compressService: CompressService,
-  ) {}
+  ) { }
 
   async upload(
     req: any,
@@ -26,10 +26,12 @@ export class FileUploaderService {
     const directory = this.prepareDirectoryName(req, fileRequest);
     for (const i in files) {
       let compressedPath = files[i].path;
-      if (files[i].originalname.match(/\.(jpg|jpeg|png|gif|webp|tiff)$/))
+      if (files[i].originalname.match(/\.(jpg|jpeg|png|gif|webp|tiff)$/)) {
         compressedPath = await this.compressService.compressImage(
           files[i].path,
         );
+      }
+
       const res = await this.s3Service.uploadLocalFile(
         compressedPath,
         directory,
@@ -51,7 +53,7 @@ export class FileUploaderService {
     for (const i in files) {
       let compressedPathpng = files[i].path;
       if (files[i].originalname.match(/\.(jpg|jpeg|png|gif|webp|tiff)$/))
-      compressedPathpng = await this.compressService.compressImagePng(
+        compressedPathpng = await this.compressService.compressImagePng(
           files[i].path,
         );
       const respng = await this.s3Service.uploadLocalFile(
@@ -59,7 +61,7 @@ export class FileUploaderService {
         directory,
       );
 
-      if (respng) {      
+      if (respng) {
         fileUrls.push(respng.Location);
       }
     }
@@ -110,7 +112,7 @@ export class FileUploaderService {
 
     return fs.createReadStream(tmpFile.name);
   }
-  
+
 
   prepareDirectoryName(req, fileRequest): string {
     let directory = '';

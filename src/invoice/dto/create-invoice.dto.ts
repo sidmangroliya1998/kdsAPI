@@ -65,4 +65,10 @@ export class CreateInvoiceDto {
   @IsBoolean()
   @IsOptional()
   print?: boolean;
+
+  @ApiProperty({ required: false, default: false })
+  @IsBoolean()
+  @IsOptional()
+  isManual?: boolean;
+
 }

@@ -30,14 +30,14 @@ import { STATUS_MSG } from 'src/core/Constants/status-message.constants';
 import { ChangeUserPasswordDto } from './dto/change-user-password.dto';
 
 @ApiTags('Users')
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 @Controller('users')
 @ApiHeader({ name: 'lang' })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('')
-  @PermissionGuard(PermissionSubject.User, Permission.Common.CREATE)
+  // @PermissionGuard(PermissionSubject.User, Permission.Common.CREATE)
   async create(
     @Req() req,
     @Body() userRequest: UserCreateDto,
@@ -91,7 +91,7 @@ export class UserController {
   }
 
   @Post('impersonate-supplier')
-  @PermissionGuard(PermissionSubject.User, Permission.User.ImpersonateSupplier)
+  // @PermissionGuard(PermissionSubject.User, Permission.User.ImpersonateSupplier)
   impersonateSupplier(
     @Request() req,
     @Body() supplierDetails: ImpersonateSupplierDto,

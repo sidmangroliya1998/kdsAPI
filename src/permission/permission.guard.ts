@@ -28,9 +28,24 @@ export class PermissionGuard implements CanActivate {
 
     if (permissionDecorator) {
       const request = context.switchToHttp().getRequest();
-
+      console.log(
+        "request ========>", request
+      );
+      
       const user = request.user;
-
+      const supplierPermission = await this.permissionService.supplierHasPermission(
+          user,
+          permissionDecorator.subject,
+          permissionDecorator.permission,
+        )
+        console.log("supplierPermission", supplierPermission);
+        
+      const userPermission = await this.permissionService.userHasPermission(
+          user,
+          permissionDecorator.subject,
+          permissionDecorator.permission,
+        )
+      console.log("userPermission", userPermission)
       if (
         (await this.permissionService.supplierHasPermission(
           user,

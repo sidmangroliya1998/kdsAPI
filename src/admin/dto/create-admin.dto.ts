@@ -34,4 +34,9 @@ export class CreateAdminDto {
   @IsString()
   @IsOptional()
   whatsappNumber?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  password?: string;
 }

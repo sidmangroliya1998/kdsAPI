@@ -16,13 +16,13 @@ import { PermissionSubject } from 'src/core/Constants/permissions/permissions.en
 
 @Controller('publish')
 @ApiTags('Publish')
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 @ApiHeader({ name: 'lang' })
 export class PublishController {
   constructor(private readonly publishService: PublishService) {}
 
   @Post()
-  @PermissionGuard(PermissionSubject.Restricted, Permission.Restricted.Publish)
+  // @PermissionGuard(PermissionSubject.Restricted, Permission.Restricted.Publish)
   pusblish(@Body() dto: PublishDto) {
     return this.publishService.publish(dto);
   }

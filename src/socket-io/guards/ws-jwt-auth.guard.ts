@@ -25,7 +25,7 @@ export class WsJwtGuard implements CanActivate {
 
     try {
       const authTokenArr = client.handshake?.headers?.authorization?.split(' ');
-      console.log(authTokenArr);
+      console.log("jwt guard token", authTokenArr);
       if (authTokenArr.length != 2) {
         this.socketGateway.emit(client.id, SocketEvents.auth, false, client.id);
         client.disconnect();
@@ -38,6 +38,8 @@ export class WsJwtGuard implements CanActivate {
       if (payload.userId) {
         this.socketGateway.emit(client.id, SocketEvents.auth, true, client.id);
         context.switchToHttp().getRequest().user = payload;
+        console.log("payload ----", payload);
+        
         client.data.user = payload;
         if (payload.supplierId && payload.roleId) {
           client.join(`${payload.supplierId}_${payload.roleId}`);

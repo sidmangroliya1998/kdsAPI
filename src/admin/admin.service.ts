@@ -22,7 +22,6 @@ export class AdminService {
   async create(req: any, dto: CreateAdminDto): Promise<AdminDocument> {
     return await this.adminModel.create({
       ...dto,
-      addedBy: req.user.userId,
     });
   }
 

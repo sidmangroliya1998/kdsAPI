@@ -157,6 +157,12 @@ export class AuthService {
       email: dto.email
     });
 
+    console.log("email from auth : ", dto.email);
+    console.log(" admin email : ", admin);
+    console.log(" adminUser email : ", adminUser);
+
+    //bcrypt.decodeBase64(admin.password);
+
     if (admin && adminUser && !adminUser.isBlocked && (await bcrypt.compare(dto.password, admin.password))) {
       delete admin.password;
       await admin.populate([

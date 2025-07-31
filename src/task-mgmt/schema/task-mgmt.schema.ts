@@ -51,10 +51,16 @@ export class TaskManagement {
     referenceDocId: string;
 
     @Prop({ required: false })
-    referenceDocNumber: string;
+    referenceDocNumber: string; //Voucher number
+
+    @Prop({ required: false })
+    docPostedDate: Date;
 
     @Prop({ type: MongooseSchema.Types.Mixed })
     docObject: any;
+
+    @Prop({ required: false })
+    docReferenceNumber: string; // Reference Number
 }
 export const TaskManagementSchema = SchemaFactory.createForClass(TaskManagement);
 

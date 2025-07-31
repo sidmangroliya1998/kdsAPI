@@ -76,6 +76,8 @@ export class PermissionService {
     permission: PermissionActions,
     skipManage = false,
   ) {
+    console.log("user -------->>>>", user);
+    
     const role = await this.roleModel.findById(user.roleId).lean();
     // console.log(role, subject, permission);
     if (!role) return false;
