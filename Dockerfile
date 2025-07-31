@@ -1,12 +1,18 @@
-# Stage 1: Build the application
-# Use a Node.js base image that supports apt-get for installing Redis.
-# node:lts (or node:20 if you prefer a specific version) is a good choice.
 FROM node:lts AS builder
 
-# Install Redis
+# Install Redis and necessary build dependencies for node-canvas
 # Switch to root user temporarily to install system-level packages
 USER root
-RUN apt-get update && apt-get install -y redis-server && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y \
+    redis-server \
+    build-essential \
+    libcairo2-dev \
+    libjpeg-dev \
+    libpango1.0-dev \
+    libgif-dev \
+    librsvg2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /usr/src/app
